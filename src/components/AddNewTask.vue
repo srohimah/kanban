@@ -9,7 +9,7 @@
       </div>
 
       <div class="modal-body">
-          <form v-on:submit.prevent="addTask">
+          <form>
             <div class="form-group row">
                 <label for="input-title" class="col-sm-3 col-form-label text-left">Title :</label>
                 <div class="col-sm-9">
@@ -22,7 +22,7 @@
                 <textarea type="password" class="form-control" placeholder="Description" v-model="newTask.description"></textarea>
                 </div>
             </div>
-             <input type="submit" class="btn btn-info" value="Add Task" >           
+             <button type="submit" @click="addTask" class="btn btn-info" value="Add Task" data-dismiss="modal">Add Task</button>          
             </form>
       </div>
 
@@ -46,6 +46,8 @@ export default {
     methods:{
         addTask: function(){
             tasksRef.push(this.newTask)
+            this.title =''
+            this.description=''
         }
     }
 

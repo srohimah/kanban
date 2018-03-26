@@ -13,7 +13,10 @@
                         <div class="card-body">
                                 {{task.description}}
                         </div> 
-                        <div class="card-footer">action</div>
+                        <div class="card-footer">
+                            <button @click="remove(task['.key'])"><span class="fa fa-minus"></span></button>
+                            <button @click="nextStep(task['.key'], task.status)"><span class="fa fa-caret-right"></span></button>
+                        </div>
                     </div>
                 </div> 
             </div>
@@ -27,7 +30,11 @@
                         <div class="card-body">
                                 {{task.description}}
                         </div> 
-                        <div class="card-footer">action</div>
+                        <div class="card-footer">
+                            <button @click="prevStep(task['.key'], task.status)"><span class="fa fa-caret-left"></span></button>
+                            <button @click="remove(task['.key'])"><span class="fa fa-minus"></span></button>
+                            <button @click="nextStep(task['.key'], task.status)"><span class="fa fa-caret-right"></span></button>
+                        </div>
                     </div>
                 </div> 
             </div>
@@ -41,7 +48,11 @@
                         <div class="card-body">
                                 {{task.description}}
                         </div> 
-                        <div class="card-footer">action</div>
+                        <div class="card-footer">
+                            <button @click="prevStep(task['.key'], task.status)"><span class="fa fa-caret-left"></span></button>
+                            <button @click="remove(task['.key'])"><span class="fa fa-minus"></span></button>
+                            <button @click="nextStep(task['.key'], task.status)"><span class="fa fa-caret-right"></span></button>
+                        </div>
                     </div>
                 </div> 
             </div>
@@ -55,7 +66,10 @@
                         <div class="card-body">
                                 {{task.description}}
                         </div> 
-                        <div class="card-footer">action</div>
+                        <div class="card-footer">
+                            <button @click="prevStep(task['.key'], task.status)"><span class="fa fa-caret-left"></span></button>
+                            <button @click="remove(task['.key'])"><span class="fa fa-minus"></span></button>
+                        </div>
                     </div>
                 </div> 
             </div>
@@ -91,6 +105,56 @@ export default {
     methods:{
         addTask(data){
             tasksRef.push(data)
+        },
+        nextStep(index, status){
+            swal({
+                title: `Mark this task as ${this.getStatus(status+1)}?`,
+                icon: "info",
+                buttons: true,
+                })
+                .then((willDelete) => {
+                if (willDelete) {
+                    if(status===0){
+                        tasksRef.child(index).update({status : 1})
+                    }else if ( status === 1){
+                        tasksRef.child(index).update({status : 2})                
+                    }else if ( status === 2){
+                        tasksRef.child(index).update({status : 3})                
+                    }
+                }
+                });
+        },
+        prevStep(index, status){
+            swal({
+                title: `Mark this task as ${this.getStatus(status-1)}?`,
+                icon: "info",
+                buttons: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        if(status===1){
+                            tasksRef.child(index).update({status : 0})
+                        }else if ( status === 2){
+                            tasksRef.child(index).update({status : 1})                
+                        }else if ( status === 3){
+                            tasksRef.child(index).update({status : 2})                
+                        }
+                    }
+                });
+        },
+        remove(task){
+            tasksRef.child(task).remove()
+        },
+        getStatus(status){
+            if(status===0){
+                return 'backlog'
+            }else if (status===1){
+                return 'todo'
+            }else if (status===2){
+                return 'doing'
+            }else if (status===3){
+                return 'done'
+            }
         }
     }
 
